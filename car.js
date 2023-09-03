@@ -19,7 +19,7 @@ class Car {
     }
     
     #move() {
-        // Adding acceleration.
+        // Acceleration.
         if(this.controls.forward) {
             this.speed += this.acceleration;
         } 
