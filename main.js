@@ -13,31 +13,45 @@ const n = 200;
 const cars = generateCars(n);
 let bestCar = cars[0];
 
+let mutationPotency;
+
+const storedPotency = localStorage.getItem("potency");
+
+if (storedPotency !== null || storedPotency !== undefined) {
+    mutationPotency = parseFloat(storedPotency);
+} else {
+    mutationPotency = 0.1;
+}
+console.log(mutationPotency);
+
 if (localStorage.getItem("bestBrain")) {
     for (let i = 0; i < cars.length; i++) {
         cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
 
         if (i != 0) {
-            NeuralNetwork.mutate(cars[i].brain, 0.1); //0.05 for similar, 0.1 for normal, 0.2 for spread
+            NeuralNetwork.mutate(cars[i].brain, mutationPotency); //0.05 for similar, 0.1 for normal, 0.2 for spread
         }
     }
+    console.log(mutationPotency);
 }
 
 const traffic = [
     new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2), 
-    new Car(road.getLaneCenter(0), -300, 30, 50, "DUMMY", 2), 
+    new Car(road.getLaneCenter(0), -300, 30, 50, "DUMMY", 2.02), 
     new Car(road.getLaneCenter(2), -300, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(0), -500, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(0), -500, 30, 50, "DUMMY", 2.02),
     new Car(road.getLaneCenter(1), -500, 30, 50, "DUMMY", 2),
     new Car(road.getLaneCenter(1), -700, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(2), -700, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(2), -700, 30, 50, "DUMMY", 2.02),
     new Car(road.getLaneCenter(1), -900, 30, 50, "DUMMY", 2), 
     new Car(road.getLaneCenter(0), -900, 30, 50, "DUMMY", 2), 
-    new Car(road.getLaneCenter(2), -1100, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(2), -1100, 30, 50, "DUMMY", 2.02),
     new Car(road.getLaneCenter(0), -1100, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(1), -1300, 30, 50, "DUMMY", 2.02),
     new Car(road.getLaneCenter(1), -1300, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(1), -1300, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(2), -1500, 30, 50, "DUMMY", 2)
+    new Car(road.getLaneCenter(2), -1500, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(1), -1500, 30, 50, "DUMMY", 2.1),
+    new Car(road.getLaneCenter(0), -1500, 30, 50, "DUMMY", 2)
 ];
 
 animate();
@@ -48,6 +62,24 @@ function save() {
 
 function discard() {
     localStorage.removeItem("bestBrain");
+}
+
+function mutationSelection(mode) {
+    if (mode === "low") {
+        localStorage.setItem("potency", 0.05);
+        mutationPotency = 0.05; // Low
+    } else if (mode === "high") {
+        mutationPotency = 0.2; // High
+        localStorage.setItem("potency", 0.2);
+    } else {
+        mutationPotency = 0.1; // Normal
+        localStorage.setItem("potency", 0.1);
+    }
+    console.log(mutationPotency);
+}
+
+function restart() {
+    location.reload();
 }
 
 function generateCars(n) {
